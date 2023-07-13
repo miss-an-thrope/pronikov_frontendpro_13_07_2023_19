@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+}
+.categories {
+    flex: 1;
+}
+.products {
+    flex: 2;
+}
+.product-info {
+    flex: 1;
+}
+.category-item, .product-item {
+    cursor: pointer;
+    padding: 5px;
+}
+.category-item:hover, .product-item:hover {
+    background-color: lightgray;
+}
