@@ -1,16 +1,4 @@
-/* Homework_19 
-
-Реалізувати подобу інтернет-магазину
-
-Дано 3 блоки
-
-    У лівій частині сторінки – перелік категорій.
-    При натисканні на категорію виводиться у середній блок список товарів цієї категорії.
-    Клік на товар – інформацію про товар у правому блоці.
-    В інформації товару - кнопка "купити"
-    При натисканні на “купити” з'являється повідомлення, що товар куплено та повернення у вихідний стан програми (коли відображається лише список категорій)
-
-*/
+/* Homework_19 */
 
 let productsData = {
     'Plato': [
@@ -58,12 +46,6 @@ const showProducts = (category) => {
         let li = document.createElement('li');
         li.className = 'product-item';
         li.innerText = product.name;
-        
-        // li.onclick = function() {
-        //     showProductInfo(product);
-        // }
-        // li.onclick = (() => showProductInfo(product));
-        // нарешті момент використання bind :D
         li.onclick = showProductInfo.bind(null, product, category);
         productList.appendChild(li);
     }
@@ -74,23 +56,80 @@ const showProductInfo = (product, category) => {
     productInfo.innerHTML = '';
 
     let name = document.createElement('p');
-    name.innerText = 'Назва: ' + product.name;
+    name.innerText = 'Назва: ' + category + ' ' + product.name;
 
     let price = document.createElement('p');
     price.innerText = 'Ціна: ' + product.price;
 
     let buyButton = document.createElement('button');
     buyButton.innerText = 'Купити';
-    buyButton.onclick = buyProduct.bind(null, product, category);
-
-
+    buyButton.onclick = showOrderForm.bind(null, product, category);
+    productInfo.appendChild(buyButton);
     productInfo.appendChild(name);
     productInfo.appendChild(price);
-    productInfo.appendChild(buyButton);
 }
 
-const buyProduct = (product, category) => {
-    alert(`Модель ${product.name} категорії ${category} куплено.`);
-    let productInfo = document.getElementById('product-info');
-    productInfo.innerHTML = '';
-}
+const showOrderForm = (product, category) => {
+    let orderForm = document.getElementById('order-form');
+    orderForm.classList.remove('hidden');
+    //data-attr для виводу інформації замовлення
+    orderForm.dataset.category = category;
+    orderForm.dataset.product = JSON.stringify(product);
+};
+
+// Homework_22
+
+const submitOrder = (event) => {
+    // Змінюю стандартну дію submit форми
+    event.preventDefault();
+
+    let name = document.getElementById('name').value;
+    let city = document.getElementById('city').value;
+    let postOffice = document.getElementById('post-office').value;
+    let paymentType = document.getElementById('payment-type').value;
+    let quantity = document.getElementById('quantity').value;
+    let comment = document.getElementById('comment').value;
+
+    // Перевірка, чи вказані дані
+    if (name && city && postOffice && paymentType && quantity) {
+        //data-attr для виводу інформації замовлення
+        let category = document.getElementById('order-form').dataset.category;
+        let product = JSON.parse(document.getElementById('order-form').dataset.product);
+        
+        let orderInfo = document.createElement('div');
+        orderInfo.innerHTML = `
+            <h3>Інформація про замовлення:</h3>
+            <p>Номер: ${product.name}</p>
+            <p>Категорія: ${category}</p>
+            <p>ПІБ покупця: ${name}</p>
+            <p>Місто: ${city}</p>
+            <p>Склад Нової пошти: ${postOffice}</p>
+            <p>Спосіб оплати: ${paymentType}</p>
+            <p>Кількість: ${quantity}</p>
+            <p>Коментар: ${comment}</p>
+        `;
+
+        document.getElementById('product-info').appendChild(orderInfo);
+
+        // Очищення форми після підтвердження замовлення
+        document.getElementById('name').value = '';
+        document.getElementById('city').value = '';
+        document.getElementById('post-office').value = '';
+        document.getElementById('payment-type').value = '';
+        document.getElementById('quantity').value = '';
+        document.getElementById('comment').value = '';
+
+        document.getElementById('order-form').classList.add('hidden');
+    } else {
+        alert('Будь ласка, заповніть усі обов\'язкові поля.');
+    }
+};
+
+
+//Homework_23
+
+// const showOrders = () => {
+//     document.querySelector('.categories').style.display = 'none';
+//     const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
+//     const ordersList = document.createElement('ul');
+// }

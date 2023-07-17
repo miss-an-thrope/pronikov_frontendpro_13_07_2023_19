@@ -7,6 +7,9 @@
     <title>Homework_19</title>
 </head>
 <body>
+    <header class="header">
+        <button onclick="showOrders()">Мої замовлення</button>
+    </header>
     <div class="container">
         <div class="categories">
             <h2>Категорії дверей</h2>
@@ -22,9 +25,45 @@
         </div>
         <div class="product-info">
             <h2>Інформація про модель</h2>
-            <div id="product-info"></div>
+            <div id="product-info"><!-- form info --></div>
         </div>
     </div>
+
+    <div id="order-form" class="hidden">
+        <h2>Оформлення замовлення</h2>
+        <form onsubmit="submitOrder(event)">
+            <label for="name">ПІБ покупця:</label>
+            <input type="text" id="name"><br><br>
+            
+            <label for="city">Місто:</label>
+            <select id="city">
+                <option value="">Виберіть місто</option>
+                <option value="Київ">Київ</option>
+                <option value="Львів">Львів</option>
+                <option value="Одеса">Одеса</option>
+                <!-- Додайте інші міста сюди -->
+            </select><br><br>
+            
+            <label for="post-office">Склад Нової пошти:</label>
+            <input type="text" id="post-office"><br><br>
+            
+            <label for="payment-type">Спосіб оплати:</label>
+            <select id="payment-type">
+                <option value="">Виберіть спосіб оплати</option>
+                <option value="Післяплата">Післяплата</option>
+                <option value="Оплата банківською карткою">Оплата банківською карткою</option>
+            </select><br><br>
+            
+            <label for="quantity">Кількість:</label>
+            <input type="number" id="quantity" min="1"><br><br>
+            
+            <label for="comment">Коментар до замовлення:</label><br>
+            <textarea id="comment" rows="4" cols="30"></textarea><br><br>
+            
+            <input type="submit" value="Підтвердити замовлення">
+        </form>
+    </div>
+
 
     <script src="assets/js/index.js"></script>
 </body>
