@@ -1,5 +1,3 @@
-
-
 .container {
     display: flex;
 }
@@ -22,4 +20,14 @@
 
 .hidden {
     display: none;
+}
+
+.details-item {
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.order-item {
+    border: 1px solid #ccc;
+    padding: 5px;
 }

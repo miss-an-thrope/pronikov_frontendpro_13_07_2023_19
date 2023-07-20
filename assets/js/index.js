@@ -77,10 +77,9 @@ const showOrderForm = (product, category) => {
     orderForm.dataset.product = JSON.stringify(product);
 };
 
-// Homework_22
+// Homework_22 (+додаток Homework_23)
 
 const submitOrder = (event) => {
-    // Змінюю стандартну дію submit форми
     event.preventDefault();
 
     let name = document.getElementById('name').value;
@@ -90,26 +89,27 @@ const submitOrder = (event) => {
     let quantity = document.getElementById('quantity').value;
     let comment = document.getElementById('comment').value;
 
-    // Перевірка, чи вказані дані
     if (name && city && postOffice && paymentType && quantity) {
-        //data-attr для виводу інформації замовлення
         let category = document.getElementById('order-form').dataset.category;
         let product = JSON.parse(document.getElementById('order-form').dataset.product);
-        
-        let orderInfo = document.createElement('div');
-        orderInfo.innerHTML = `
-            <h3>Інформація про замовлення:</h3>
-            <p>Номер: ${product.name}</p>
-            <p>Категорія: ${category}</p>
-            <p>ПІБ покупця: ${name}</p>
-            <p>Місто: ${city}</p>
-            <p>Склад Нової пошти: ${postOffice}</p>
-            <p>Спосіб оплати: ${paymentType}</p>
-            <p>Кількість: ${quantity}</p>
-            <p>Коментар: ${comment}</p>
-        `;
 
-        document.getElementById('product-info').appendChild(orderInfo);
+        let orderData = {
+            date: new Date().toLocaleDateString(),
+            category: category,
+            product: product,
+            name: name,
+            city: city,
+            postOffice: postOffice,
+            paymentType: paymentType,
+            quantity: quantity,
+            comment: comment,
+            price: product.price * quantity,
+            categoryName: category,
+            modelName: product.name
+        };
+
+        orders.push(orderData);
+        localStorage.setItem('orders', JSON.stringify(orders));
 
         // Очищення форми після підтвердження замовлення
         document.getElementById('name').value = '';
@@ -120,6 +120,8 @@ const submitOrder = (event) => {
         document.getElementById('comment').value = '';
 
         document.getElementById('order-form').classList.add('hidden');
+
+        showOrders();
     } else {
         alert('Будь ласка, заповніть усі обов\'язкові поля.');
     }
@@ -128,8 +130,72 @@ const submitOrder = (event) => {
 
 //Homework_23
 
-// const showOrders = () => {
-//     document.querySelector('.categories').style.display = 'none';
-//     const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
-//     const ordersList = document.createElement('ul');
-// }
+let orders = JSON.parse(localStorage.getItem('orders')) || [];
+let isOrderListVisible = false;
+
+const toggleOrderList = () => {
+    isOrderListVisible = !isOrderListVisible; // клік = значення навпаки :)
+    let orderDetails = document.getElementById('order-details');
+    if (isOrderListVisible) {
+        showOrders();
+        orderDetails.style.display = 'block'; // true = список замовлення
+    } else {
+        orderDetails.style.display = 'none'; // false = ховаємо список замовленя, або його деталі
+    }
+};
+
+const showOrders = () => {
+    let orderDetails = document.getElementById('order-details');
+    orderDetails.innerHTML = '';
+
+    if (orders.length === 0) {
+        let noOrdersMessage = document.createElement('p');
+        noOrdersMessage.textContent = 'У вас немає замовлень.';
+        orderDetails.appendChild(noOrdersMessage);
+    } else {
+        for (let i = 0; i < orders.length; i++) {
+            let order = orders[i];
+            let orderItem = document.createElement('div');
+            orderItem.className = 'order-item';
+            orderItem.innerHTML = `
+                <p>Дата: ${order.date}</p>
+                <p>Ціна: ${order.price}</p>
+                <button onclick="showOrderDetails(${i})">Деталі</button>
+                <button onclick="removeOrder(${i})">Видалити</button>
+            `;
+            orderDetails.appendChild(orderItem);
+        }
+    }
+    orderDetails.style.display = 'block';
+};
+
+const showOrderDetails = (index) => {
+    let orderDetails = document.getElementById('order-details');
+    orderDetails.innerHTML = '';
+
+    let order = orders[index];
+    let detailsItem = document.createElement('div');
+    detailsItem.className = 'details-item';
+    detailsItem.innerHTML = `
+        <p>Дата: ${order.date}</p>
+        <p>Ціна: ${order.price}</p>
+        <p>Категорія: ${order.categoryName}</p>
+        <p>Модель: ${order.modelName}</p>
+        <p>ПІБ покупця: ${order.name}</p>
+        <p>Місто: ${order.city}</p>
+        <p>Склад Нової пошти: ${order.postOffice}</p>
+        <p>Спосіб оплати: ${order.paymentType}</p>
+        <p>Кількість: ${order.quantity}</p>
+        <p>Коментар: ${order.comment}</p>
+    `;
+    orderDetails.appendChild(detailsItem);
+}
+
+const removeOrder = (index) => {
+    orders.splice(index, 1);
+    localStorage.setItem('orders', JSON.stringify(orders));
+    showOrders();
+};
+
+const myOrdersButton = document.querySelector('.header button');
+myOrdersButton.addEventListener('click', toggleOrderList);
